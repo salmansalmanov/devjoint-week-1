@@ -1,5 +1,6 @@
 package com.salman.week1.model.dto.request;
 
+import com.salman.week1.model.enums.MemberStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberRequest {
+public class MemberUpdateRequest {
     private String name;
     private String surname;
+    private MemberStatus status;
 }

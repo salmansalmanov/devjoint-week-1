@@ -1,6 +1,7 @@
 package com.salman.week1.controller;
 
-import com.salman.week1.model.dto.request.MemberRequest;
+import com.salman.week1.model.dto.request.MemberCreateRequest;
+import com.salman.week1.model.dto.request.MemberUpdateRequest;
 import com.salman.week1.model.dto.response.MemberResponse;
 import com.salman.week1.model.enums.MemberStatus;
 import com.salman.week1.service.abstraction.MemberService;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/members")
@@ -17,9 +20,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberCreateRequest request) {
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(memberService.createMember(request));
     }
 
@@ -32,5 +35,19 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(memberService.getAll(page, size, status));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberService.getById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> updateMemberById(@RequestBody MemberUpdateRequest request, @PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberService.updateById(id, request));
     }
 }
