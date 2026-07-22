@@ -40,4 +40,11 @@ public class AuthorController {
                 .status(HttpStatus.OK)
                 .body(authorService.getById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AuthorResponse> updateAuthorById(@PathVariable UUID id, @RequestBody AuthorRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authorService.updateById(id, request));
+    }
 }

@@ -12,4 +12,6 @@ public interface AuthorService {
     Page<AuthorResponse> getAll(int page, int size);
 
     AuthorResponse getById(UUID id);
+
+    AuthorResponse updateById(UUID id, AuthorRequest request);
 }
