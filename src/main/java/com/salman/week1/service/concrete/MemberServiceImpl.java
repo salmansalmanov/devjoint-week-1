@@ -47,14 +47,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponse getById(UUID id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         return memberMapper.toResponse(member);
     }
 
     @Override
     public MemberResponse updateById(UUID id, MemberUpdateRequest request) {
         Member existingMember = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         Member updatedMember = memberMapper.updateRequestToEntity(request, existingMember);
         Member savedMember = memberRepository.save(updatedMember);
         return memberMapper.toResponse(savedMember);
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String deleteById(UUID id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         memberRepository.delete(member);
         return "Member deleted successfully";
     }
@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponse changeStatusById(UUID id, MemberStatus status) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         member.setStatus(status);
         Member savedMember = memberRepository.save(member);
         return memberMapper.toResponse(savedMember);
