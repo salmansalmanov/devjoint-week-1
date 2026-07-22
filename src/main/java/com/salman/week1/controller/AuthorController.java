@@ -3,6 +3,7 @@ package com.salman.week1.controller;
 import com.salman.week1.model.dto.request.AuthorRequest;
 import com.salman.week1.model.dto.response.AuthorResponse;
 import com.salman.week1.service.abstraction.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<AuthorResponse> createAuthor(@RequestBody AuthorRequest request) {
+    public ResponseEntity<AuthorResponse> createAuthor(@RequestBody @Valid AuthorRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authorService.createAuthor(request));
@@ -42,7 +43,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorResponse> updateAuthorById(@PathVariable UUID id, @RequestBody AuthorRequest request) {
+    public ResponseEntity<AuthorResponse> updateAuthorById(@PathVariable UUID id, @RequestBody @Valid AuthorRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(authorService.updateById(id, request));

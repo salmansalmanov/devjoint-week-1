@@ -4,6 +4,7 @@ import com.salman.week1.model.dto.request.BookRequest;
 import com.salman.week1.model.dto.response.BookResponse;
 import com.salman.week1.model.enums.BookStatus;
 import com.salman.week1.service.abstraction.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponse> createBook(@RequestBody BookRequest request) {
+    public ResponseEntity<BookResponse> createBook(@RequestBody @Valid BookRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(bookService.createBook(request));
@@ -44,7 +45,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBookById(@PathVariable UUID id, @RequestBody BookRequest request) {
+    public ResponseEntity<BookResponse> updateBookById(@PathVariable UUID id, @RequestBody @Valid BookRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookService.updateById(id, request));

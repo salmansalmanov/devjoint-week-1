@@ -5,6 +5,7 @@ import com.salman.week1.model.dto.request.MemberUpdateRequest;
 import com.salman.week1.model.dto.response.MemberResponse;
 import com.salman.week1.model.enums.MemberStatus;
 import com.salman.week1.service.abstraction.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberCreateRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody @Valid MemberCreateRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(memberService.createMember(request));
@@ -45,7 +46,7 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMemberById(@RequestBody MemberUpdateRequest request, @PathVariable UUID id) {
+    public ResponseEntity<MemberResponse> updateMemberById(@RequestBody @Valid MemberUpdateRequest request, @PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(memberService.updateById(id, request));
