@@ -1,10 +1,7 @@
 package com.salman.week1.model.entity;
 
 import com.salman.week1.model.enums.BookStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "books")
 public class Book extends BaseEntity {
 
     @Column(nullable = false)
@@ -36,4 +34,7 @@ public class Book extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private BookStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Author author;
 }
