@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/authors")
@@ -30,5 +32,12 @@ public class AuthorController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(authorService.getAll(page, size));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AuthorResponse> getAuthorById(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authorService.getById(id));
     }
 }

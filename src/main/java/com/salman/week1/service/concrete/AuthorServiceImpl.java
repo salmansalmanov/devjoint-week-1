@@ -1,5 +1,6 @@
 package com.salman.week1.service.concrete;
 
+import com.salman.week1.exception.custom.NotFoundException;
 import com.salman.week1.mapper.AuthorMapper;
 import com.salman.week1.model.dto.request.AuthorRequest;
 import com.salman.week1.model.dto.response.AuthorResponse;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +34,12 @@ public class AuthorServiceImpl implements AuthorService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Author> authors = authorRepository.findAll(pageable);
         return authors.map(authorMapper::toResponse);
+    }
+
+    @Override
+    public AuthorResponse getById(UUID id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Author not found with ID: " + id));
+        return authorMapper.toResponse(author);
     }
 }
