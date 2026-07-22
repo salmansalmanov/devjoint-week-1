@@ -15,4 +15,6 @@ public interface BookService {
     BookResponse getById(UUID id);
 
     BookResponse updateById(UUID id, BookRequest request);
+
+    String deleteById(UUID id);
 }

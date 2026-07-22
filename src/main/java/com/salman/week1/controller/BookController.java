@@ -49,4 +49,11 @@ public class BookController {
                 .status(HttpStatus.OK)
                 .body(bookService.updateById(id, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBookById(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.deleteById(id));
+    }
 }

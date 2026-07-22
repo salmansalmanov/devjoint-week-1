@@ -65,4 +65,12 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(updatedBook);
         return bookMapper.toResponse(savedBook);
     }
+
+    @Override
+    public String deleteById(UUID id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
+        bookRepository.delete(book);
+        return "Book deleted successfully";
+    }
 }
