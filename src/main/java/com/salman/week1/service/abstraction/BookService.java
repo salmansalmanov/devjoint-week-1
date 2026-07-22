@@ -13,4 +13,6 @@ public interface BookService {
     Page<BookResponse> getAll(int page, int size, BookStatus status);
 
     BookResponse getById(UUID id);
+
+    BookResponse updateById(UUID id, BookRequest request);
 }

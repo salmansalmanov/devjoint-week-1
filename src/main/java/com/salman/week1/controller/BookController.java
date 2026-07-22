@@ -37,9 +37,16 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBookById(@PathVariable UUID id) {
+    public ResponseEntity<BookResponse> getBookById(@PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookService.getById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookResponse> updateBookById(@PathVariable UUID id, @RequestBody BookRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.updateById(id, request));
     }
 }

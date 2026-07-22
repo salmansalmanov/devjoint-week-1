@@ -22,4 +22,6 @@ public interface BookMapper {
     }
 
     BookResponse toResponse(Book book);
+
+    Book updateRequestToEntity(BookRequest request, @MappingTarget Book book);
 }

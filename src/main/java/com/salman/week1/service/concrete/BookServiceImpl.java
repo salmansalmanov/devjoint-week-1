@@ -49,4 +49,20 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
         return bookMapper.toResponse(book);
     }
+
+    @Override
+    public BookResponse updateById(UUID id, BookRequest request) {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
+        Book updatedBook = bookMapper.updateRequestToEntity(request, existingBook);
+        if (request.getAuthorId() != null) {
+            if (!existingBook.getAuthor().getId().equals(request.getAuthorId())) {
+                Author author = authorRepository.findById(request.getAuthorId())
+                        .orElseThrow(() -> new NotFoundException("Author not found with ID: " + request.getAuthorId()));
+                updatedBook.setAuthor(author);
+            }
+        }
+        Book savedBook = bookRepository.save(updatedBook);
+        return bookMapper.toResponse(savedBook);
+    }
 }
