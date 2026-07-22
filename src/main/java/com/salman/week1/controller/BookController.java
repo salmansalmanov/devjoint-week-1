@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/books")
@@ -32,5 +34,12 @@ public class BookController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookService.getAll(page, size, status));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookResponse> updateBookById(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.getById(id));
     }
 }

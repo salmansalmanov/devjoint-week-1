@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -39,5 +41,12 @@ public class BookServiceImpl implements BookService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Book> books = bookRepository.findAllByStatus(status, pageable);
         return books.map(bookMapper::toResponse);
+    }
+
+    @Override
+    public BookResponse getById(UUID id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
+        return bookMapper.toResponse(book);
     }
 }
