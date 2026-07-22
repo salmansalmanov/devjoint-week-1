@@ -47,4 +47,11 @@ public class AuthorController {
                 .status(HttpStatus.OK)
                 .body(authorService.updateById(id, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAuthorById(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authorService.deleteById(id));
+    }
 }

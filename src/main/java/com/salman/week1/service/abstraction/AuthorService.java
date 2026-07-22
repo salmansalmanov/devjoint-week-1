@@ -14,4 +14,6 @@ public interface AuthorService {
     AuthorResponse getById(UUID id);
 
     AuthorResponse updateById(UUID id, AuthorRequest request);
+
+    String deleteById(UUID id);
 }

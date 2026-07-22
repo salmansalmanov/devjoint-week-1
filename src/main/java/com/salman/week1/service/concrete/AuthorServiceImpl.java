@@ -51,4 +51,12 @@ public class AuthorServiceImpl implements AuthorService {
         Author savedAuthor = authorRepository.save(updatedAuthor);
         return authorMapper.toResponse(savedAuthor);
     }
+
+    @Override
+    public String deleteById(UUID id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Author not found with ID: " + id));
+        authorRepository.delete(author);
+        return "Author deleted successfully";
+    }
 }
