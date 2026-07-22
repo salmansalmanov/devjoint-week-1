@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BookRepository extends JpaRepository<Book, UUID> {
@@ -17,4 +18,6 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
             WHERE (:status IS NULL OR b.status = :status)
             """)
     Page<Book> findAllByStatus(@Param("status") BookStatus status, Pageable pageable);
+
+    Optional<Book> findByIdAndStatus(UUID id, BookStatus status);
 }

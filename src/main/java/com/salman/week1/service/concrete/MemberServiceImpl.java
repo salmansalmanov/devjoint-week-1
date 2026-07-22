@@ -1,11 +1,16 @@
 package com.salman.week1.service.concrete;
 
+import com.salman.week1.exception.custom.NotAvailableException;
+import com.salman.week1.exception.custom.NotFoundException;
 import com.salman.week1.mapper.MemberMapper;
 import com.salman.week1.model.dto.request.MemberCreateRequest;
 import com.salman.week1.model.dto.request.MemberUpdateRequest;
 import com.salman.week1.model.dto.response.MemberResponse;
+import com.salman.week1.model.entity.Book;
 import com.salman.week1.model.entity.Member;
+import com.salman.week1.model.enums.BookStatus;
 import com.salman.week1.model.enums.MemberStatus;
+import com.salman.week1.repository.BookRepository;
 import com.salman.week1.repository.MemberRepository;
 import com.salman.week1.service.abstraction.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -22,6 +28,7 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public MemberResponse createMember(MemberCreateRequest request) {
@@ -68,5 +75,23 @@ public class MemberServiceImpl implements MemberService {
         member.setStatus(status);
         Member savedMember = memberRepository.save(member);
         return memberMapper.toResponse(savedMember);
+    }
+
+    @Override
+    @Transactional
+    public String borrowBook(UUID memberId, UUID bookId) {
+        Member member = memberRepository.findByIdAndStatus(memberId, MemberStatus.ACTIVE)
+                .orElseThrow(() -> new NotFoundException("Member not found with ID: " + memberId));
+        Book book = bookRepository.findByIdAndStatus(bookId, BookStatus.ACTIVE)
+                .orElseThrow(() -> new NotFoundException("Book not found with ID: " + bookId));
+        if (book.getAvailableCopies() <= 0) {
+            throw new NotAvailableException("Book is not available");
+        }
+
+        member.getBooks().add(book);
+        book.getMembers().add(member);
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        memberRepository.save(member);
+        return "Book borrowed successfully";
     }
 }

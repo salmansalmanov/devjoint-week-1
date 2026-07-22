@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,5 +43,5 @@ public class Book extends BaseEntity {
     private Author author;
 
     @ManyToMany(mappedBy = "books")
-    private List<Member> members;
+    private List<Member> members = new ArrayList<>();
 }

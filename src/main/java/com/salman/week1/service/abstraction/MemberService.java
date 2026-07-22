@@ -20,4 +20,6 @@ public interface MemberService {
     String deleteById(UUID id);
 
     MemberResponse changeStatusById(UUID id, MemberStatus status);
+
+    String borrowBook(UUID memberId, UUID bookId);
 }

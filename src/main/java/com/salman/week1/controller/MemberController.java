@@ -64,4 +64,11 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(memberService.changeStatusById(id, status));
     }
+
+    @PostMapping("/{memberId}/borrow/{bookId}")
+    public ResponseEntity<String> borrowBook(@PathVariable UUID memberId, @PathVariable UUID bookId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberService.borrowBook(memberId, bookId));
+    }
 }
