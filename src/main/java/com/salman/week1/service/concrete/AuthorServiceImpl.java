@@ -7,6 +7,10 @@ import com.salman.week1.model.entity.Author;
 import com.salman.week1.repository.AuthorRepository;
 import com.salman.week1.service.abstraction.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +24,12 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = authorMapper.toEntity(request);
         Author savedAuthor = authorRepository.save(author);
         return authorMapper.toResponse(savedAuthor);
+    }
+
+    @Override
+    public Page<AuthorResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Author> authors = authorRepository.findAll(pageable);
+        return authors.map(authorMapper::toResponse);
     }
 }
