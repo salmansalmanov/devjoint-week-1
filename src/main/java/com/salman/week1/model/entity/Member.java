@@ -1,5 +1,6 @@
 package com.salman.week1.model.entity;
 
+import com.salman.week1.model.enums.MemberStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,9 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private String surname;
+
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status;
 
     @ManyToMany
     @JoinTable(name = "member_books",
