@@ -60,4 +60,13 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
         return "Member deleted successfully";
     }
+
+    @Override
+    public MemberResponse changeStatusById(UUID id, MemberStatus status) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + id));
+        member.setStatus(status);
+        Member savedMember = memberRepository.save(member);
+        return memberMapper.toResponse(savedMember);
+    }
 }

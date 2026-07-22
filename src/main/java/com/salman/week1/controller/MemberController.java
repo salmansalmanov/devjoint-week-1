@@ -57,4 +57,11 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(memberService.deleteById(id));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MemberResponse> changeMemberStatusById(@PathVariable UUID id, @RequestParam MemberStatus status) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberService.changeStatusById(id, status));
+    }
 }

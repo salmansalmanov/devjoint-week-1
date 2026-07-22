@@ -18,4 +18,6 @@ public interface MemberService {
     MemberResponse updateById(UUID id, MemberUpdateRequest request);
 
     String deleteById(UUID id);
+
+    MemberResponse changeStatusById(UUID id, MemberStatus status);
 }
