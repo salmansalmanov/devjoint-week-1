@@ -1,4 +1,4 @@
-package com.salman.week1.model.dto.response;
+package com.salman.week1.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorResponse {
-    private UUID id;
-    private String name;
-    private String surname;
+public class BookRequest {
+    private String title;
+    private Integer publicationYear;
+    private Integer totalCopies;
+    private UUID authorId;
 }
