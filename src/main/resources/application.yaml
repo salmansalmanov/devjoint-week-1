@@ -16,3 +16,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  security:
+    access-token:
+      secret: ${ACCESS_TOKEN_SECRET}
+      expiration: ${ACCESS_TOKEN_EXPIRATION}
+    refresh-token:
+      secret: ${REFRESH_TOKEN_SECRET}
+      expiration: ${REFRESH_TOKEN_EXPIRATION}

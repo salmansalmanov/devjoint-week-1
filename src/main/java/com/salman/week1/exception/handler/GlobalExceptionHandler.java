@@ -1,5 +1,7 @@
 package com.salman.week1.exception.handler;
 
+import com.salman.week1.exception.custom.InvalidStatusException;
+import com.salman.week1.exception.custom.InvalidTokenException;
 import com.salman.week1.exception.custom.NotAvailableException;
 import com.salman.week1.exception.custom.NotFoundException;
 import com.salman.week1.model.dto.response.ErrorResponse;
@@ -27,6 +29,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse<Void>> handleNotAvailableException(NotAvailableException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse<>(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidStatusException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleInvalidStatusException(InvalidStatusException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse<>(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleInvalidTokenException(InvalidTokenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse<>(ex.getMessage(), null));
     }
 
