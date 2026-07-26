@@ -14,13 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "authors")
-public class Author extends BaseEntity {
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String surname;
+public class Author extends User {
 
     @OneToMany(mappedBy = "author", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Book> books;

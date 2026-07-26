@@ -10,6 +10,7 @@ import com.salman.week1.model.entity.Book;
 import com.salman.week1.model.entity.Member;
 import com.salman.week1.model.enums.BookStatus;
 import com.salman.week1.model.enums.MemberStatus;
+import com.salman.week1.model.enums.Role;
 import com.salman.week1.repository.BookRepository;
 import com.salman.week1.repository.MemberRepository;
 import com.salman.week1.service.abstraction.MemberService;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,13 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
     private final BookRepository bookRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public MemberResponse createMember(MemberCreateRequest request) {
         Member member = memberMapper.createRequestToEntity(request);
+        member.setPassword(passwordEncoder.encode(request.getPassword()));
+        member.setRole(Role.MEMBER);
         Member savedMember = memberRepository.save(member);
         return memberMapper.toResponse(savedMember);
     }
@@ -56,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
         Member existingMember = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         Member updatedMember = memberMapper.updateRequestToEntity(request, existingMember);
+        updatedMember.setPassword(passwordEncoder.encode(request.getPassword()));
         Member savedMember = memberRepository.save(updatedMember);
         return memberMapper.toResponse(savedMember);
     }

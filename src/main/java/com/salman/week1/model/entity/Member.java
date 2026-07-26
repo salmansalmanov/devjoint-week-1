@@ -16,14 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "members")
-public class Member extends BaseEntity {
+public class Member extends User {
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String surname;
-
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 

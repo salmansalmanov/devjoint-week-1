@@ -24,7 +24,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/v1/members")
 public class MemberController {
-
     private final MemberService memberService;
 
     @Operation(summary = "Create a new member", description = "Creates a new library member with the provided details.")

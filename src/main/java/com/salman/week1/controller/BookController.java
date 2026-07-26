@@ -23,7 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/v1/books")
 public class BookController {
-
     private final BookService bookService;
 
     @Operation(summary = "Create a new book", description = "Creates a new book record with the provided details.")

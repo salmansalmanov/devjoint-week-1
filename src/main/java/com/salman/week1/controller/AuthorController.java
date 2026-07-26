@@ -22,7 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/v1/authors")
 public class AuthorController {
-
     private final AuthorService authorService;
 
     @Operation(summary = "Create a new author", description = "Creates a new author based on the provided request body.")
