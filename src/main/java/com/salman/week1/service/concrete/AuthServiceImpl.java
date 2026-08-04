@@ -27,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + request.getUsername()));
+                .orElseThrow(() -> new NotFoundException("User not found with username: " + request.getUsername()));
         if (user instanceof Member member) {
             if (member.getStatus().equals(MemberStatus.BLOCKED)) {
                 throw new InvalidStatusException("User is blocked");
