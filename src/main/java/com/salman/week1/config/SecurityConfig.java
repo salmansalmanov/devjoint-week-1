@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/members/*").hasAnyRole("MEMBER", "AUTHOR")
                         .requestMatchers(HttpMethod.PUT, "/v1/members/*").hasRole("MEMBER")
                         .requestMatchers(HttpMethod.DELETE, "/v1/members/*").hasRole("MEMBER")
+                        .requestMatchers(HttpMethod.POST, "/v1/files").hasRole("AUTHOR")
                         .anyRequest().hasAnyRole("AUTHOR", "MEMBER"))
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

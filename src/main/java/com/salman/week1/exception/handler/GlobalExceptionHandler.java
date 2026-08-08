@@ -1,9 +1,6 @@
 package com.salman.week1.exception.handler;
 
-import com.salman.week1.exception.custom.InvalidStatusException;
-import com.salman.week1.exception.custom.InvalidTokenException;
-import com.salman.week1.exception.custom.NotAvailableException;
-import com.salman.week1.exception.custom.NotFoundException;
+import com.salman.week1.exception.custom.*;
 import com.salman.week1.model.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +40,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse<Void>> handleInvalidTokenException(InvalidTokenException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse<>(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleInvalidFileTypeException(InvalidFileTypeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse<>(ex.getMessage(), null));
     }
 
