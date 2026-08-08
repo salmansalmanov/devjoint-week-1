@@ -23,3 +23,7 @@ spring:
     refresh-token:
       secret: ${REFRESH_TOKEN_SECRET}
       expiration: ${REFRESH_TOKEN_EXPIRATION}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}

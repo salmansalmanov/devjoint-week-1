@@ -8,11 +8,13 @@ import com.salman.week1.model.entity.Author;
 import com.salman.week1.model.enums.Role;
 import com.salman.week1.repository.AuthorRepository;
 import com.salman.week1.service.abstraction.AuthorService;
+import com.salman.week1.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
     private final AuthorRepository authorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
 
     @Override
     public AuthorResponse createAuthor(AuthorRequest request) {
@@ -43,18 +46,27 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorResponse getById(UUID id) {
+        String key = "author:" + id;
+        AuthorResponse response = redisUtil.getResource(key, AuthorResponse.class);
+        if (response != null) {
+            return response;
+        }
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Author not found with ID: " + id));
-        return authorMapper.toResponse(author);
+        response = authorMapper.toResponse(author);
+        redisUtil.save(key, response);
+        return response;
     }
 
     @Override
     public AuthorResponse updateById(UUID id, AuthorRequest request) {
+        String key = "author:" + id;
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Author not found with ID: " + id));
         Author updatedAuthor = authorMapper.updateRequestToEntity(request, existingAuthor);
         updatedAuthor.setPassword(passwordEncoder.encode(request.getPassword()));
         Author savedAuthor = authorRepository.save(updatedAuthor);
+        redisUtil.delete(key);
         return authorMapper.toResponse(savedAuthor);
     }
 
@@ -63,6 +75,8 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Author not found with ID: " + id));
         authorRepository.delete(author);
+        String key = "author:" + id;
+        redisUtil.delete(key);
         return "Author deleted successfully";
     }
 }

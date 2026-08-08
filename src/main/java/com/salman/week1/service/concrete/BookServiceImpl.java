@@ -10,12 +10,15 @@ import com.salman.week1.model.enums.BookStatus;
 import com.salman.week1.repository.AuthorRepository;
 import com.salman.week1.repository.BookRepository;
 import com.salman.week1.service.abstraction.BookService;
+import com.salman.week1.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
@@ -25,6 +28,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final RedisUtil redisUtil;
 
     @Override
     public BookResponse createBook(BookRequest request) {
@@ -45,13 +49,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponse getById(UUID id) {
+        String key = "book:" + id;
+        BookResponse response = redisUtil.getResource(key, BookResponse.class);
+        if (response != null) {
+            return response;
+        }
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
-        return bookMapper.toResponse(book);
+        response = bookMapper.toResponse(book);
+        redisUtil.save(key, response);
+        return response;
     }
 
     @Override
     public BookResponse updateById(UUID id, BookRequest request) {
+        String key = "book:" + id;
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
         Book updatedBook = bookMapper.updateRequestToEntity(request, existingBook);
@@ -63,14 +75,17 @@ public class BookServiceImpl implements BookService {
             }
         }
         Book savedBook = bookRepository.save(updatedBook);
+        redisUtil.delete(key);
         return bookMapper.toResponse(savedBook);
     }
 
     @Override
     public String deleteById(UUID id) {
+        String key = "book:" + id;
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found with ID: " + id));
         bookRepository.delete(book);
+        redisUtil.delete(key);
         return "Book deleted successfully";
     }
 }

@@ -14,6 +14,7 @@ import com.salman.week1.model.enums.Role;
 import com.salman.week1.repository.BookRepository;
 import com.salman.week1.repository.MemberRepository;
 import com.salman.week1.service.abstraction.MemberService;
+import com.salman.week1.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BookRepository bookRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
 
     @Override
     public MemberResponse createMember(MemberCreateRequest request) {
@@ -51,35 +53,48 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponse getById(UUID id) {
+        String key = "member:" + id;
+        MemberResponse response = redisUtil.getResource(key, MemberResponse.class);
+        if (response != null) {
+            return response;
+        }
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
-        return memberMapper.toResponse(member);
+        response = memberMapper.toResponse(member);
+        redisUtil.save(key, response);
+        return response;
     }
 
     @Override
     public MemberResponse updateById(UUID id, MemberUpdateRequest request) {
+        String key = "member:" + id;
         Member existingMember = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         Member updatedMember = memberMapper.updateRequestToEntity(request, existingMember);
         updatedMember.setPassword(passwordEncoder.encode(request.getPassword()));
         Member savedMember = memberRepository.save(updatedMember);
+        redisUtil.delete(key);
         return memberMapper.toResponse(savedMember);
     }
 
     @Override
     public String deleteById(UUID id) {
+        String key = "member:" + id;
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         memberRepository.delete(member);
+        redisUtil.delete(key);
         return "Member deleted successfully";
     }
 
     @Override
     public MemberResponse changeStatusById(UUID id, MemberStatus status) {
+        String key = "member:" + id;
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         member.setStatus(status);
         Member savedMember = memberRepository.save(member);
+        redisUtil.delete(key);
         return memberMapper.toResponse(savedMember);
     }
 
