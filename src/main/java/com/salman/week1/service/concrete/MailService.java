@@ -29,6 +29,7 @@ public class MailService {
         sendMail(to, subject, text);
     }
 
+    @Async
     public void sendUserDeletionEmail(String to) {
         String subject = "Account Deletion";
         String text = "Your account has been deleted successfully.";
