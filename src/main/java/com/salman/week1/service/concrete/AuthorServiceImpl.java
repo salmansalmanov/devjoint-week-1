@@ -26,6 +26,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
+    private final MailService mailService;
 
     @Override
     public AuthorResponse createAuthor(AuthorRequest request) {
@@ -33,6 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
         author.setPassword(passwordEncoder.encode(request.getPassword()));
         author.setRole(Role.AUTHOR);
         Author savedAuthor = authorRepository.save(author);
+        mailService.sendUserCreationEmail(author.getEmail());
         return authorMapper.toResponse(savedAuthor);
     }
 
@@ -66,6 +68,7 @@ public class AuthorServiceImpl implements AuthorService {
         updatedAuthor.setPassword(passwordEncoder.encode(request.getPassword()));
         Author savedAuthor = authorRepository.save(updatedAuthor);
         redisUtil.delete(key);
+        mailService.sendUserUpdateEmail(savedAuthor.getEmail());
         return authorMapper.toResponse(savedAuthor);
     }
 
@@ -76,6 +79,7 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.delete(author);
         String key = "author:" + id;
         redisUtil.delete(key);
+        mailService.sendUserDeletionEmail(author.getEmail());
         return "Author deleted successfully";
     }
 }

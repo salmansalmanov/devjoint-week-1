@@ -23,6 +23,9 @@ public class MemberUpdateRequest {
     @NotNull(message = "Status cannot be null")
     private MemberStatus status;
 
+    @NotBlank(message = "Email cannot be blank")
+    private String email;
+
     @NotBlank(message = "Username cannot be blank")
     private String username;
 

@@ -13,6 +13,7 @@ import com.salman.week1.model.enums.MemberStatus;
 import com.salman.week1.model.enums.Role;
 import com.salman.week1.repository.BookRepository;
 import com.salman.week1.repository.MemberRepository;
+import com.salman.week1.service.abstraction.BookService;
 import com.salman.week1.service.abstraction.MemberService;
 import com.salman.week1.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class MemberServiceImpl implements MemberService {
     private final BookRepository bookRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
+    private final MailService mailService;
 
     @Override
     public MemberResponse createMember(MemberCreateRequest request) {
@@ -41,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
         member.setPassword(passwordEncoder.encode(request.getPassword()));
         member.setRole(Role.MEMBER);
         Member savedMember = memberRepository.save(member);
+        mailService.sendUserCreationEmail(member.getEmail());
         return memberMapper.toResponse(savedMember);
     }
 
@@ -74,6 +77,7 @@ public class MemberServiceImpl implements MemberService {
         updatedMember.setPassword(passwordEncoder.encode(request.getPassword()));
         Member savedMember = memberRepository.save(updatedMember);
         redisUtil.delete(key);
+        mailService.sendUserUpdateEmail(savedMember.getEmail());
         return memberMapper.toResponse(savedMember);
     }
 
@@ -84,6 +88,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new NotFoundException("Member not found with ID: " + id));
         memberRepository.delete(member);
         redisUtil.delete(key);
+        mailService.sendUserDeletionEmail(member.getEmail());
         return "Member deleted successfully";
     }
 
@@ -95,6 +100,7 @@ public class MemberServiceImpl implements MemberService {
         member.setStatus(status);
         Member savedMember = memberRepository.save(member);
         redisUtil.delete(key);
+        mailService.sendUserUpdateEmail(savedMember.getEmail());
         return memberMapper.toResponse(savedMember);
     }
 

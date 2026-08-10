@@ -18,6 +18,9 @@ public class MemberCreateRequest {
     @NotBlank(message = "Surname cannot be blank")
     private String surname;
 
+    @NotBlank(message = "Email cannot be blank")
+    private String email;
+
     @NotBlank(message = "Username cannot be blank")
     private String username;
 
